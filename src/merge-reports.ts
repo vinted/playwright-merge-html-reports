@@ -21,6 +21,7 @@ import JSZip from "jszip";
 import yazl from "yazl";
 import Base64Encoder from "./Base64Encoder";
 import type { HTMLReport, Config, ZipDataFile, Stats, FileReport } from "./types";
+import * as fs from 'fs-extra'
 
 const defaultConfig: Required<Config> = {
   outputFolderName: "merged-html-report",
@@ -143,7 +144,7 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
 
     // only need to copy trace applicate dir once if needed
     if (existsSync(traceFolderPath) && !existsSync(traceOuputPath)) {
-      await copyDir(traceFolderPath, traceOuputPath, debug);
+      copyTraceDir(contentFolderPath, contentOuputPath)
     }
 
     if (debug) {
@@ -225,4 +226,8 @@ async function copyDir(srcDirPath: string, srcDirOutputPath: string, debug: bool
           }
         })
       );
+}
+
+async function copyTraceDir(srcDirPath: string, srcDirOutputPath: string) {
+  await fs.copy(srcDirPath, srcDirOutputPath)
 }
